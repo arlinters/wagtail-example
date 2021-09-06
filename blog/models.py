@@ -1,6 +1,8 @@
 from django import forms
 from django.db import models
+from django.db.models.deletion import SET_NULL
 from django.db.models.fields import Field
+from django.db.models.fields.related import ForeignKey
 
 from modelcluster.fields import ParentalKey, ParentalManyToManyField
 from modelcluster.contrib.taggit import ClusterTaggableManager
@@ -47,15 +49,13 @@ class BlogIndexPage(Page):
         FieldPanel('intro', classname="full")
 	]
 
-
 class BlogTagIndexPage(Page):
 
     def get_context(self, request):
-
         # Filter by tag
         tag = request.GET.get('tag')
         blogpages = BlogPage.objects.filter(tags__name=tag)
-
+				
         # Update template context
         context = super().get_context(request)
         context['blogpages'] = blogpages
@@ -68,12 +68,30 @@ class BlogPageTag(TaggedItemBase):
 		on_delete=models.CASCADE
 	)
 
+class BlogAuthor(Page):
+	firstname = models.CharField(max_length=20)
+	lastname = models.CharField(max_length=20)
+	description =models.TextField(max_length=120)
+
+	search_fields = Page.search_fields + [
+		index.SearchField('firstname'),
+		index.SearchField('lastname'),
+	]
+
+	content_panels = Page.content_panels + [
+		FieldPanel('firstname'),
+		FieldPanel('lastname'),
+		FieldPanel('description'),
+	]
+
 class BlogPage(Page):
+	# Database fields
 	date = models.DateField("Post date")
 	intro = models.CharField(max_length=250)
 	body = RichTextField(blank=True)
 	tags = ClusterTaggableManager(through=BlogPageTag, blank=True)
 	categories = ParentalManyToManyField('blog.BlogCategory', blank=True)
+	author = models.ForeignKey('blog.BlogAuthor', on_delete=SET_NULL, null=True)
 
 	def main_image(self):
 		gallery_item = self.gallery_images.first()
@@ -82,16 +100,19 @@ class BlogPage(Page):
 		else:
 			return None
 
+	# Search index configuration
 	search_fields = Page.search_fields + [
 			index.SearchField('intro'),
 			index.SearchField('body'),
 	]
 
+	# Editor panel configuration
 	content_panels = Page.content_panels + [
 			MultiFieldPanel([
 				FieldPanel('date'),
 				FieldPanel('tags'),
 				FieldPanel('categories', widget=forms.CheckboxSelectMultiple),
+				FieldPanel('author')
 			], heading="Blog Information"),
 			InlinePanel('gallery_images', label='Gallery images'),
 			FieldPanel('intro'),
