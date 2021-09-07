@@ -6,6 +6,9 @@
 
 {% block content %}
     <h1>{{ page.title }}</h1>
+		
+
+
     <p class="meta">{{ page.date }} - Authored by: {{page.author.firstname}}</p>
 		{% with categories=page.categories.all %}
 			{% if categories %}
@@ -21,23 +24,22 @@
 			{% endif %}
 		{% endwith %}
     <div class="intro">{{ page.intro }}</div>
-
-    {{ page.body|richtext }}
-
 		{% for item in page.gallery_images.all %}
 			<div style="float: left; margin: 10px">
 				{% image item.image fill-320x240 %}
 				<p>{{ item.caption }}</p>
 			</div>
 		{% endfor %}
+    {{ page.body|richtext }}
 
-    <p><a href="{{ page.get_parent.url }}">Return to blog</a></p>
+
+    <p><a class='link-primary'  href="{{ page.get_parent.url }}">Return to blog</a></p>
 
 		{% if page.tags.all.count %}
-			<div class="tags">
+			<div class="tags mb-5">
 				<h3>Tags</h3>
 				{% for tag in page.tags.all  %}
-					<a href="{% slugurl 'tags'%}?tag={{ tag }}"><button type="button">{{tag}}</button></a>
+					<a href="{% slugurl 'tags'%}?tag={{ tag }}"><button type="button" class='btn btn-info'>{{tag}}</button></a>
 				{% endfor %}
 			</div>
 		{% endif %}

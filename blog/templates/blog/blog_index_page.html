@@ -11,14 +11,19 @@
     </div>
     {% for post in blogpages %}
     
-    <div class='d-flex justify-content-center flex-column align-items-center'>
+    <div class='d-flex justify-content-center flex-column align-items-center mb-5 mt-5 border rounded w-75 ms-auto me-auto'>
         {% with post=post.specific %}
                     {% with post.main_image as main_image %}
-                    {% if main_image %}{% image main_image fill-240x180 %}{% endif %}
+                    
+                    {% if main_image %}
+                      <div class="pt-4">
+                        {% image main_image fill-240x180 %}
+                      </div>
+                    {% endif %}
             {% endwith %}
-            <h3><a href="{% pageurl post %}">{{ post.title }}</a></h3>
+            <h3 class='mt-4'><a href="{% pageurl post %}">{{ post.title }}</a></h3>
 
-            <figure>
+            <figure class='mt-4'>
                 <blockquote class="blockquote">
                     <p>{{ post.intro }}</p>
                 </blockquote>
