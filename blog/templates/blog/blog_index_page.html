@@ -4,19 +4,31 @@
 {% block body_class %}template-blogindexpage{% endblock %}
 
 {% block content %}
-    <h1>{{ page.title }}</h1>
+    <div class='d-flex justify-content-center flex-column align-items-center'>
+    <h1 class='display-1'>{{ page.title }}</h1>
 
     <div class="intro">{{ page.intro|richtext }}</div>
-
+    </div>
     {% for post in blogpages %}
+    
+    <div class='d-flex justify-content-center flex-column align-items-center'>
         {% with post=post.specific %}
-            <h2><a href="{% pageurl post %}">{{ post.title }}</a></h2>
-            {% with post.main_image as main_image %}
-                {% if main_image %}{% image main_image fill-160x100 %}{% endif %}
+                    {% with post.main_image as main_image %}
+                    {% if main_image %}{% image main_image fill-240x180 %}{% endif %}
             {% endwith %}
-            <p>{{ post.intro }}</p>
-            {{ post.body|richtext }}
+            <h3><a href="{% pageurl post %}">{{ post.title }}</a></h3>
+
+            <figure>
+                <blockquote class="blockquote">
+                    <p>{{ post.intro }}</p>
+                </blockquote>
+                <figcaption class="blockquote-footer">
+                    Monty Python and the Holy Grail (1975)
+                </figcaption>
+            </figure>
+            {% comment %} {{ post.body|richtext }} {% endcomment %}
         {% endwith %}
+    </div>
     {% endfor %}
 
 {% endblock %}

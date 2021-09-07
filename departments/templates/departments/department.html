@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load wagtailcore_tags wagtailimages_tags %}
+
+{% block body_class %}template-department-home{% endblock %}
+
+{% block content %}
+    <h1>{{ page.title }}</h1>
+		<p class="description">{{ page.description|richtext }}</p>
+		<p>{{page.location}}</p>
+
+		<p><a href="{{ page.get_parent.url }}">Return to departments</a></p>
+
+{% endblock %}
